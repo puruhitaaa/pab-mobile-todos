@@ -1,13 +1,14 @@
-import { ScreenContent } from 'components/ScreenContent';
 import { StatusBar } from 'expo-status-bar';
+import AppNavigator from './navigation/AppNavigator';
+import { TodoProvider } from './context/TodoContext';
 
 import './global.css';
 
 export default function App() {
   return (
-    <>
-      <ScreenContent title="Home" path="App.tsx"></ScreenContent>
+    <TodoProvider>
+      <AppNavigator />
       <StatusBar style="auto" />
-    </>
+    </TodoProvider>
   );
 }
