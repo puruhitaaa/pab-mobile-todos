@@ -66,69 +66,74 @@ export default function TodoListScreen() {
 
   const renderTodoItem = ({ item }: { item: Todo }) => (
     <TouchableOpacity
-      className="mx-4 mb-2 rounded-lg border border-gray-200 bg-white p-4 shadow-sm"
+      className="mx-4 mb-3 rounded-2xl bg-white p-4 shadow-sm"
       onPress={() => navigation.navigate('TodoDetail', { id: item.id })}>
       <View className="flex-row items-center justify-between">
-        <View className="flex-1">
-          <Text
-            className={`text-lg font-medium ${
-              item.completed ? 'text-gray-500 line-through' : 'text-gray-900'
-            }`}>
-            {item.title}
-          </Text>
-          {item.description && (
-            <Text
-              className={`mt-1 text-sm ${
-                item.completed ? 'text-gray-400 line-through' : 'text-gray-600'
-              }`}>
-              {item.description}
-            </Text>
-          )}
-          <Text className="mt-2 text-xs text-gray-400">
-            {new Date(item.createdAt).toLocaleDateString()}
-          </Text>
-        </View>
-        <View className="flex-row items-center">
+        <View className="flex-1 flex-row items-center">
           <TouchableOpacity
-            className={`mr-3 h-6 w-6 rounded-full border-2 ${
-              item.completed ? 'border-green-500 bg-green-500' : 'border-gray-300'
+            className={`mr-3 h-6 w-6 items-center justify-center rounded-full border-2 ${
+              item.completed ? 'border-green-500 bg-green-500' : 'border-gray-300 bg-white'
             }`}
             onPress={() => handleToggleTodo(item.id)}>
-            {item.completed && <Text className="text-center text-white">✓</Text>}
+            {item.completed && <Text className="text-xs text-white">✓</Text>}
           </TouchableOpacity>
-          <TouchableOpacity
-            className="rounded bg-red-500 px-3 py-1"
-            onPress={() => handleDeleteTodo(item.id)}>
-            <Text className="text-sm text-white">Delete</Text>
-          </TouchableOpacity>
+
+          <View className="flex-1">
+            <Text
+              className={`text-base font-semibold ${
+                item.completed ? 'text-gray-400 line-through' : 'text-gray-900'
+              }`}>
+              {item.title}
+            </Text>
+            {item.description && (
+              <Text
+                className={`mt-1 text-sm ${item.completed ? 'text-gray-300' : 'text-gray-600'}`}
+                numberOfLines={2}>
+                {item.description}
+              </Text>
+            )}
+          </View>
         </View>
+
+        <TouchableOpacity
+          className="ml-2 rounded-xl bg-red-50 px-3 py-2"
+          onPress={() => handleDeleteTodo(item.id)}>
+          <Text className="text-sm font-medium text-red-600">Delete</Text>
+        </TouchableOpacity>
       </View>
     </TouchableOpacity>
   );
 
   const renderEmpty = () => (
-    <View className="flex-1 items-center justify-center py-12">
-      <Text className="mb-2 text-lg text-gray-500">No todos yet</Text>
-      <Text className="px-8 text-center text-gray-400">
-        Tap the + button to add your first todo
+    <View className="flex-1 items-center justify-center py-16">
+      <View className="mb-4 h-16 w-16 items-center justify-center rounded-full bg-gray-100">
+        <Text className="text-2xl">📝</Text>
+      </View>
+      <Text className="mb-2 text-xl font-semibold text-gray-700">No todos yet</Text>
+      <Text className="px-8 text-center leading-6 text-gray-500">
+        Tap the + button to add your first todo and start organizing your tasks
       </Text>
     </View>
   );
 
   const renderHeader = () => (
-    <View className="bg-gray-50 p-4">
-      <TextInput
-        className="rounded-lg border border-gray-200 bg-white px-4 py-3"
-        placeholder="Search todos..."
-        value={searchQuery}
-        onChangeText={handleSearch}
-      />
+    <View className="mb-4 bg-white p-4 shadow-sm">
+      <View className="flex-row items-center rounded-2xl bg-gray-50 px-4 py-3">
+        <Text className="mr-3 text-gray-400">🔍</Text>
+        <TextInput
+          className="flex-1 text-base text-gray-900"
+          placeholder="Search todos..."
+          placeholderTextColor="#9CA3AF"
+          value={searchQuery}
+          onChangeText={handleSearch}
+        />
+      </View>
     </View>
   );
 
   return (
     <Container>
-      <View className="flex-1 bg-gray-50">
+      <View className="flex-1">
         <FlatList
           data={state.todos}
           keyExtractor={(item) => item.id.toString()}
@@ -136,29 +141,38 @@ export default function TodoListScreen() {
           ListHeaderComponent={renderHeader}
           ListEmptyComponent={renderEmpty}
           refreshControl={<RefreshControl refreshing={state.refreshing} onRefresh={refreshTodos} />}
-          contentContainerStyle={state.todos.length === 0 ? { flex: 1 } : {}}
+          contentContainerStyle={
+            state.todos.length === 0 ? { flex: 1 } : { paddingTop: 8, paddingBottom: 100 }
+          }
+          showsVerticalScrollIndicator={false}
         />
 
         {/* Add Todo FAB */}
         <TouchableOpacity
-          className="absolute bottom-6 right-6 h-14 w-14 items-center justify-center rounded-full bg-blue-500 shadow-lg"
+          className="elevation-8 absolute bottom-8 right-6 h-16 w-16 items-center justify-center rounded-full bg-blue-500 shadow-2xl"
           onPress={() => navigation.navigate('AddTodo')}>
-          <Text className="text-2xl font-bold text-white">+</Text>
+          <Text className="text-3xl font-bold text-white">+</Text>
         </TouchableOpacity>
 
         {/* Loading overlay */}
         {state.loading && !state.refreshing && (
-          <View className="absolute inset-0 items-center justify-center bg-black bg-opacity-50">
-            <Text className="text-white">Loading...</Text>
+          <View className="absolute inset-0 items-center justify-center bg-white bg-opacity-95">
+            <View className="items-center rounded-2xl bg-white p-6 shadow-lg">
+              <Text className="mb-2 text-lg font-medium text-gray-700">Loading...</Text>
+              <Text className="text-sm text-gray-500">Fetching your todos</Text>
+            </View>
           </View>
         )}
 
         {/* Error message */}
         {state.error && (
-          <View className="absolute left-4 right-4 top-4 rounded-lg bg-red-500 p-3">
-            <Text className="text-white">{state.error}</Text>
-            <TouchableOpacity className="mt-2" onPress={() => fetchTodos()}>
-              <Text className="text-white underline">Retry</Text>
+          <View className="absolute left-6 right-6 top-6 rounded-2xl border border-red-200 bg-red-50 p-4 shadow-lg">
+            <Text className="mb-2 font-medium text-red-800">Oops! Something went wrong</Text>
+            <Text className="mb-3 text-sm text-red-700">{state.error}</Text>
+            <TouchableOpacity
+              className="self-start rounded-xl bg-red-500 px-4 py-2"
+              onPress={() => fetchTodos()}>
+              <Text className="text-sm font-medium text-white">Try Again</Text>
             </TouchableOpacity>
           </View>
         )}

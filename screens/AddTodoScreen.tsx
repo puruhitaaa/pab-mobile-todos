@@ -54,52 +54,67 @@ export default function AddTodoScreen() {
     <Container>
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        className="flex-1 bg-gray-50">
-        <ScrollView className="flex-1">
-          <View className="mb-6">
-            <Text className="mb-2 text-2xl font-bold text-gray-900">Add New Todo</Text>
-            <Text className="text-gray-600">Create a new task to add to your todo list</Text>
-          </View>
-
-          <View className="mb-4">
-            <Text className="mb-2 text-sm font-medium text-gray-700">Title *</Text>
-            <TextInput
-              className="rounded-lg border border-gray-200 bg-white px-4 py-3 text-base"
-              placeholder="Enter todo title..."
-              value={title}
-              onChangeText={setTitle}
-              maxLength={100}
-              autoFocus
-            />
+        className="flex-1">
+        <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
+          <View className="mb-8 mt-4">
+            <View className="mb-4 h-16 w-16 items-center justify-center rounded-full bg-blue-100">
+              <Text className="text-2xl">✨</Text>
+            </View>
+            <Text className="mb-2 text-3xl font-bold text-gray-900">Add New Todo</Text>
+            <Text className="text-lg text-gray-600">
+              Create a new task to add to your todo list
+            </Text>
           </View>
 
           <View className="mb-6">
-            <Text className="mb-2 text-sm font-medium text-gray-700">Description (Optional)</Text>
-            <TextInput
-              className="min-h-[100px] rounded-lg border border-gray-200 bg-white px-4 py-3 text-base"
-              placeholder="Enter todo description..."
-              value={description}
-              onChangeText={setDescription}
-              multiline
-              numberOfLines={4}
-              textAlignVertical="top"
-              maxLength={500}
-            />
+            <Text className="mb-3 text-base font-semibold text-gray-800">Title *</Text>
+            <View className="rounded-2xl bg-white p-1 shadow-sm">
+              <TextInput
+                className="rounded-xl bg-gray-50 px-4 py-4 text-base text-gray-900"
+                placeholder="Enter todo title..."
+                placeholderTextColor="#9CA3AF"
+                value={title}
+                onChangeText={setTitle}
+                maxLength={100}
+                autoFocus
+              />
+            </View>
           </View>
 
-          <View className="flex-row space-x-3">
+          <View className="mb-8">
+            <Text className="mb-3 text-base font-semibold text-gray-800">
+              Description (Optional)
+            </Text>
+            <View className="rounded-2xl bg-white p-1 shadow-sm">
+              <TextInput
+                className="min-h-[120px] rounded-xl bg-gray-50 px-4 py-4 text-base text-gray-900"
+                placeholder="Enter todo description..."
+                placeholderTextColor="#9CA3AF"
+                value={description}
+                onChangeText={setDescription}
+                multiline
+                numberOfLines={4}
+                textAlignVertical="top"
+                maxLength={500}
+              />
+            </View>
+          </View>
+
+          <View className="flex-row gap-x-4">
             <TouchableOpacity
-              className="flex-1 items-center rounded-lg bg-gray-200 py-3"
+              className="flex-1 items-center rounded-2xl bg-white py-4 shadow-sm"
               onPress={handleCancel}
               disabled={loading}>
-              <Text className="font-medium text-gray-700">Cancel</Text>
+              <Text className="text-base font-semibold text-gray-700">Cancel</Text>
             </TouchableOpacity>
 
             <TouchableOpacity
-              className="flex-1 items-center rounded-lg bg-blue-500 py-3"
+              className={`flex-1 items-center rounded-2xl py-4 shadow-lg ${
+                title.trim() ? 'bg-blue-500' : 'bg-gray-300'
+              }`}
               onPress={handleSubmit}
               disabled={loading || !title.trim()}>
-              <Text className="font-medium text-white">
+              <Text className="text-base font-semibold text-white">
                 {loading ? 'Creating...' : 'Create Todo'}
               </Text>
             </TouchableOpacity>

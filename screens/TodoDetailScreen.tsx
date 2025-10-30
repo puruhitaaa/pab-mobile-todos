@@ -78,7 +78,10 @@ export default function TodoDetailScreen() {
     return (
       <Container>
         <View className="flex-1 items-center justify-center bg-gray-50">
-          <Text className="text-gray-600">Loading todo details...</Text>
+          <View className="items-center rounded-2xl bg-white p-6 shadow-lg">
+            <Text className="mb-2 text-lg font-medium text-gray-700">Loading todo details...</Text>
+            <Text className="text-sm text-gray-500">Please wait</Text>
+          </View>
         </View>
       </Container>
     );
@@ -88,9 +91,16 @@ export default function TodoDetailScreen() {
     return (
       <Container>
         <View className="flex-1 items-center justify-center bg-gray-50">
-          <Text className="mb-4 text-center text-red-500">{error || 'Todo not found'}</Text>
-          <TouchableOpacity className="rounded-lg bg-blue-500 px-6 py-3" onPress={loadTodo}>
-            <Text className="font-medium text-white">Retry</Text>
+          <View className="mb-6 h-16 w-16 items-center justify-center rounded-full bg-red-100">
+            <Text className="text-2xl">⚠️</Text>
+          </View>
+          <Text className="mb-4 text-center text-xl font-semibold text-red-700">
+            {error || 'Todo not found'}
+          </Text>
+          <TouchableOpacity
+            className="rounded-2xl bg-red-500 px-8 py-4 shadow-lg"
+            onPress={loadTodo}>
+            <Text className="text-base font-semibold text-white">Try Again</Text>
           </TouchableOpacity>
         </View>
       </Container>
@@ -99,70 +109,83 @@ export default function TodoDetailScreen() {
 
   return (
     <Container>
-      <ScrollView className="flex-1 bg-gray-50">
+      <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
         {/* Header */}
-        <View className="mb-6">
-          <Text className="mb-2 text-3xl font-bold text-gray-900">{todo.title}</Text>
+        <View className="mb-8 mt-4">
           <View className="mb-4 flex-row items-center">
             <View
-              className={`mr-2 h-3 w-3 rounded-full ${
+              className={`mr-3 h-4 w-4 rounded-full ${
                 todo.completed ? 'bg-green-500' : 'bg-yellow-500'
               }`}
             />
-            <Text className="text-sm text-gray-600">
+            <Text className="text-sm font-medium uppercase tracking-wide text-gray-600">
               {todo.completed ? 'Completed' : 'Pending'}
             </Text>
           </View>
+          <Text className="mb-4 text-4xl font-bold leading-tight text-gray-900">{todo.title}</Text>
         </View>
 
         {/* Description */}
         {todo.description && (
-          <View className="mb-6">
-            <Text className="mb-2 text-lg font-semibold text-gray-800">Description</Text>
-            <Text className="text-base leading-6 text-gray-700">{todo.description}</Text>
+          <View className="mb-8">
+            <Text className="mb-4 text-xl font-semibold text-gray-800">Description</Text>
+            <View className="rounded-2xl bg-white p-6 shadow-sm">
+              <Text className="text-base leading-7 text-gray-700">{todo.description}</Text>
+            </View>
           </View>
         )}
 
         {/* Metadata */}
-        <View className="mb-8">
-          <Text className="mb-3 text-lg font-semibold text-gray-800">Details</Text>
-          <View className="rounded-lg border border-gray-200 bg-white p-4">
-            <View className="mb-2 flex-row justify-between">
-              <Text className="text-gray-600">Created:</Text>
-              <Text className="text-gray-900">{new Date(todo.createdAt).toLocaleDateString()}</Text>
-            </View>
-            <View className="flex-row justify-between">
-              <Text className="text-gray-600">Status:</Text>
-              <Text
-                className={`font-medium ${todo.completed ? 'text-green-600' : 'text-yellow-600'}`}>
-                {todo.completed ? 'Completed' : 'Pending'}
+        <View className="mb-10">
+          <Text className="mb-4 text-xl font-semibold text-gray-800">Details</Text>
+          <View className="rounded-2xl bg-white p-6 shadow-sm">
+            <View className="mb-4 flex-row items-center justify-between">
+              <Text className="text-base text-gray-600">Created</Text>
+              <Text className="text-base font-medium text-gray-900">
+                {new Date(todo.createdAt).toLocaleDateString()}
               </Text>
+            </View>
+            <View className="flex-row items-center justify-between">
+              <Text className="text-base text-gray-600">Status</Text>
+              <View className="flex-row items-center">
+                <View
+                  className={`mr-2 h-2 w-2 rounded-full ${
+                    todo.completed ? 'bg-green-500' : 'bg-yellow-500'
+                  }`}
+                />
+                <Text
+                  className={`text-base font-medium ${
+                    todo.completed ? 'text-green-600' : 'text-yellow-600'
+                  }`}>
+                  {todo.completed ? 'Completed' : 'Pending'}
+                </Text>
+              </View>
             </View>
           </View>
         </View>
 
         {/* Action Buttons */}
-        <View className="space-y-3">
+        <View className="gap-y-4">
           <TouchableOpacity
-            className={`items-center rounded-lg px-6 py-4 ${
+            className={`items-center rounded-2xl px-2 py-3 shadow-lg ${
               todo.completed ? 'bg-yellow-500' : 'bg-green-500'
             }`}
             onPress={handleToggleComplete}>
-            <Text className="text-lg font-medium text-white">
+            <Text className="text-lg font-semibold text-white">
               {todo.completed ? 'Mark as Pending' : 'Mark as Complete'}
             </Text>
           </TouchableOpacity>
 
           <TouchableOpacity
-            className="items-center rounded-lg bg-blue-500 px-6 py-4"
+            className="items-center rounded-2xl bg-blue-500 px-2 py-3 shadow-lg"
             onPress={handleEdit}>
-            <Text className="text-lg font-medium text-white">Edit Todo</Text>
+            <Text className="text-lg font-semibold text-white">Edit Todo</Text>
           </TouchableOpacity>
 
           <TouchableOpacity
-            className="items-center rounded-lg bg-red-500 px-6 py-4"
+            className="items-center rounded-2xl bg-red-500 px-2 py-3 shadow-lg"
             onPress={handleDelete}>
-            <Text className="text-lg font-medium text-white">Delete Todo</Text>
+            <Text className="text-lg font-semibold text-white">Delete Todo</Text>
           </TouchableOpacity>
         </View>
       </ScrollView>
