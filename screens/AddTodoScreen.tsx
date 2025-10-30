@@ -4,7 +4,6 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
-  SafeAreaView,
   Alert,
   KeyboardAvoidingView,
   Platform,
@@ -14,6 +13,7 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useNavigation } from '@react-navigation/native';
 import { useTodo } from '../context/TodoContext';
 import { RootStackParamList } from '../navigation/AppNavigator';
+import { Container } from '../components/Container';
 
 type AddTodoScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'AddTodo'>;
 
@@ -51,11 +51,11 @@ export default function AddTodoScreen() {
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-gray-50">
+    <Container>
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        className="flex-1">
-        <ScrollView className="flex-1 p-4">
+        className="flex-1 bg-gray-50">
+        <ScrollView className="flex-1">
           <View className="mb-6">
             <Text className="mb-2 text-2xl font-bold text-gray-900">Add New Todo</Text>
             <Text className="text-gray-600">Create a new task to add to your todo list</Text>
@@ -106,6 +106,6 @@ export default function AddTodoScreen() {
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
-    </SafeAreaView>
+    </Container>
   );
 }

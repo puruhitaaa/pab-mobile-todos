@@ -4,7 +4,6 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
-  SafeAreaView,
   Alert,
   KeyboardAvoidingView,
   Platform,
@@ -14,6 +13,7 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { useTodo } from '../context/TodoContext';
 import { RootStackParamList } from '../navigation/AppNavigator';
+import { Container } from '../components/Container';
 
 type EditTodoScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'EditTodo'>;
 
@@ -77,31 +77,33 @@ export default function EditTodoScreen() {
 
   if (initialLoading) {
     return (
-      <SafeAreaView className="flex-1 items-center justify-center bg-gray-50">
-        <Text className="text-gray-600">Loading todo...</Text>
-      </SafeAreaView>
+      <Container>
+        <View className="flex-1 items-center justify-center bg-gray-50">
+          <Text className="text-gray-600">Loading todo...</Text>
+        </View>
+      </Container>
     );
   }
 
   if (error) {
     return (
-      <SafeAreaView className="flex-1 bg-gray-50 p-4">
-        <View className="flex-1 items-center justify-center">
+      <Container>
+        <View className="flex-1 items-center justify-center bg-gray-50">
           <Text className="mb-4 text-center text-red-500">{error}</Text>
           <TouchableOpacity className="rounded-lg bg-blue-500 px-6 py-3" onPress={loadTodo}>
             <Text className="font-medium text-white">Retry</Text>
           </TouchableOpacity>
         </View>
-      </SafeAreaView>
+      </Container>
     );
   }
 
   return (
-    <SafeAreaView className="flex-1 bg-gray-50">
+    <Container>
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        className="flex-1">
-        <ScrollView className="flex-1 p-4">
+        className="flex-1 bg-gray-50">
+        <ScrollView className="flex-1">
           <View className="mb-6">
             <Text className="mb-2 text-2xl font-bold text-gray-900">Edit Todo</Text>
             <Text className="text-gray-600">Update your todo details below</Text>
@@ -152,6 +154,6 @@ export default function EditTodoScreen() {
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
-    </SafeAreaView>
+    </Container>
   );
 }

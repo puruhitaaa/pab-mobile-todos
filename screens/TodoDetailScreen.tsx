@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { View, Text, TouchableOpacity, SafeAreaView, Alert, ScrollView } from 'react-native';
+import { View, Text, TouchableOpacity, Alert, ScrollView } from 'react-native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { useTodo } from '../context/TodoContext';
 import { RootStackParamList } from '../navigation/AppNavigator';
 import { Todo } from '../services/api';
+import { Container } from '../components/Container';
 
 type TodoDetailScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'TodoDetail'>;
 
@@ -75,28 +76,30 @@ export default function TodoDetailScreen() {
 
   if (loading) {
     return (
-      <SafeAreaView className="flex-1 items-center justify-center bg-gray-50">
-        <Text className="text-gray-600">Loading todo details...</Text>
-      </SafeAreaView>
+      <Container>
+        <View className="flex-1 items-center justify-center bg-gray-50">
+          <Text className="text-gray-600">Loading todo details...</Text>
+        </View>
+      </Container>
     );
   }
 
   if (error || !todo) {
     return (
-      <SafeAreaView className="flex-1 bg-gray-50 p-4">
-        <View className="flex-1 items-center justify-center">
+      <Container>
+        <View className="flex-1 items-center justify-center bg-gray-50">
           <Text className="mb-4 text-center text-red-500">{error || 'Todo not found'}</Text>
           <TouchableOpacity className="rounded-lg bg-blue-500 px-6 py-3" onPress={loadTodo}>
             <Text className="font-medium text-white">Retry</Text>
           </TouchableOpacity>
         </View>
-      </SafeAreaView>
+      </Container>
     );
   }
 
   return (
-    <SafeAreaView className="flex-1 bg-gray-50">
-      <ScrollView className="flex-1 p-4">
+    <Container>
+      <ScrollView className="flex-1 bg-gray-50">
         {/* Header */}
         <View className="mb-6">
           <Text className="mb-2 text-3xl font-bold text-gray-900">{todo.title}</Text>
@@ -163,6 +166,6 @@ export default function TodoDetailScreen() {
           </TouchableOpacity>
         </View>
       </ScrollView>
-    </SafeAreaView>
+    </Container>
   );
 }

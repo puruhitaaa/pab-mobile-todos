@@ -10,10 +10,10 @@ import {
 } from 'react-native';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTodo } from '../context/TodoContext';
 import { Todo } from '../services/api';
 import { RootStackParamList } from '../navigation/AppNavigator';
+import { Container } from '../components/Container';
 
 type TodoListScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'TodoList'>;
 
@@ -127,8 +127,8 @@ export default function TodoListScreen() {
   );
 
   return (
-    <SafeAreaView className="flex-1 bg-gray-50">
-      <View className="flex-1">
+    <Container>
+      <View className="flex-1 bg-gray-50">
         <FlatList
           data={state.todos}
           keyExtractor={(item) => item.id.toString()}
@@ -163,6 +163,6 @@ export default function TodoListScreen() {
           </View>
         )}
       </View>
-    </SafeAreaView>
+    </Container>
   );
 }
