@@ -14,7 +14,7 @@ interface TodoState {
   refreshing: boolean;
   pagination: PaginationInfo | null;
   filters: {
-    search: string;
+    filter: string;
     sortBy: 'id' | 'title' | 'description' | 'completed' | 'createdAt';
     sortOrder: 'asc' | 'desc';
     page: number;
@@ -39,7 +39,7 @@ const initialState: TodoState = {
   refreshing: false,
   pagination: null,
   filters: {
-    search: '',
+    filter: '',
     sortBy: 'createdAt',
     sortOrder: 'desc',
     page: 1,

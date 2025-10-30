@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import {
   View,
   Text,
@@ -14,6 +14,7 @@ import { useTodo } from '../context/TodoContext';
 import { Todo } from '../services/api';
 import { RootStackParamList } from '../navigation/AppNavigator';
 import { Container } from '../components/Container';
+import { useDebounce } from '../utils/useDebounce';
 
 type TodoListScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'TodoList'>;
 
@@ -21,12 +22,28 @@ export default function TodoListScreen() {
   const navigation = useNavigation<TodoListScreenNavigationProp>();
   const { state, fetchTodos, toggleTodo, deleteTodo, refreshTodos } = useTodo();
   const [searchQuery, setSearchQuery] = useState('');
+  const debouncedSearchQuery = useDebounce(searchQuery, 300);
+  const [hasInitialized, setHasInitialized] = useState(false);
 
-  // Fetch todos when screen comes into focus
+  // Handle search changes (skip initial mount)
+  useEffect(() => {
+    if (!hasInitialized) return;
+
+    if (debouncedSearchQuery.trim()) {
+      fetchTodos({ filter: debouncedSearchQuery });
+    } else {
+      fetchTodos({ filter: '' }); // Explicitly clear filter to show all todos
+    }
+  }, [debouncedSearchQuery, fetchTodos, hasInitialized]);
+
+  // Initial load when screen comes into focus
   useFocusEffect(
     React.useCallback(() => {
-      fetchTodos();
-    }, [fetchTodos])
+      if (!hasInitialized) {
+        fetchTodos({ filter: '' }); // Ensure clean initial load
+        setHasInitialized(true);
+      }
+    }, [fetchTodos, hasInitialized])
   );
 
   const handleToggleTodo = async (id: number) => {
@@ -56,13 +73,9 @@ export default function TodoListScreen() {
     ]);
   };
 
-  const handleSearch = (query: string) => {
+  const handleSearchInput = useCallback((query: string) => {
     setSearchQuery(query);
-    // Debounce search - in a real app you'd use a library like lodash.debounce
-    setTimeout(() => {
-      fetchTodos({ search: query });
-    }, 300);
-  };
+  }, []);
 
   const renderTodoItem = ({ item }: { item: Todo }) => (
     <TouchableOpacity
@@ -116,29 +129,28 @@ export default function TodoListScreen() {
     </View>
   );
 
-  const renderHeader = () => (
-    <View className="mb-4 bg-white p-4 shadow-sm">
-      <View className="flex-row items-center rounded-2xl bg-gray-50 px-4 py-3">
-        <Text className="mr-3 text-gray-400">🔍</Text>
-        <TextInput
-          className="flex-1 text-base text-gray-900"
-          placeholder="Search todos..."
-          placeholderTextColor="#9CA3AF"
-          value={searchQuery}
-          onChangeText={handleSearch}
-        />
-      </View>
-    </View>
-  );
-
   return (
     <Container>
       <View className="flex-1">
+        {/* Search Header - Moved outside FlatList to prevent focus loss */}
+        <View className="bg-white p-4 shadow-sm">
+          <View className="flex-row items-center rounded-2xl bg-gray-50 px-4 py-3">
+            <Text className="mr-3 text-gray-400">🔍</Text>
+            <TextInput
+              className="flex-1 text-base text-gray-900"
+              placeholder="Search todos..."
+              placeholderTextColor="#9CA3AF"
+              value={searchQuery}
+              onChangeText={handleSearchInput}
+              key="search-input" // Stable key to maintain focus
+            />
+          </View>
+        </View>
+
         <FlatList
           data={state.todos}
           keyExtractor={(item) => item.id.toString()}
           renderItem={renderTodoItem}
-          ListHeaderComponent={renderHeader}
           ListEmptyComponent={renderEmpty}
           refreshControl={<RefreshControl refreshing={state.refreshing} onRefresh={refreshTodos} />}
           contentContainerStyle={
